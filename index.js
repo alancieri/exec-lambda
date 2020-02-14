@@ -35,4 +35,4 @@ const menu = async () => {
   }
 }
 
-menu()
+module.exports = menu
