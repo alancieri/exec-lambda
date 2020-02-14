@@ -2,7 +2,19 @@
 
 Use this package as AWS Lambda Functions Manager.<br />
 
-### Install 
+### Install globally
+
+```
+npm i exec-lambda -g
+```
+
+### Usage
+
+```
+lambda
+```
+
+### Install locally
 
 ```
 npm i exec-lambda --save
@@ -11,5 +23,6 @@ npm i exec-lambda --save
 ### Usage
 
 ```
+cd exec-lambda
 npm start
 ```
