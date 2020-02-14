@@ -1,26 +1,28 @@
 {
-  "name": "exec-lambda",
-  "version": "0.0.6",
-  "description": "AWS Lambda Functions Manager",
-  "main": "lib/layers-set.js",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "keywords": [
-    "AWS Lambda",
-    "AWS Lambda Functions"
-  ],
-  "author": "Alessandro Lancieri",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/alancieri/exec-lambda"
-  },
-  "license": "ISC",
-  "bin": "cli.js",
-  "dependencies": {
-    "child_process": "^1.0.2",
-    "download-file": "^0.1.5",
-    "extract-zip": "^1.6.7",
-    "readline-sync": "^1.4.10"
-  }
+    "name": "exec-lambda",
+    "version": "0.0.7",
+    "description": "AWS Lambda Functions Manager",
+    "main": "lib/layers-set.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "keywords": [
+        "AWS Lambda",
+        "AWS Lambda Functions"
+    ],
+    "author": "Alessandro Lancieri",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/alancieri/exec-lambda"
+    },
+    "license": "ISC",
+    "bin": {
+        "lambda": "./cli.js"
+    },
+    "dependencies": {
+        "child_process": "^1.0.2",
+        "download-file": "^0.1.5",
+        "extract-zip": "^1.6.7",
+        "readline-sync": "^1.4.10"
+    }
 }
