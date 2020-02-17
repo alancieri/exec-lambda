@@ -1,8 +1,8 @@
 {
     "name": "exec-lambda",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "AWS Lambda Functions Manager",
-    "main": "lib/layers-set.js",
+    "main": "index.js",
     "scripts": {
         "start": "node index.js"
     },
