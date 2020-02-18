@@ -4,7 +4,7 @@ const exec = util.promisify(require('child_process').exec)
 const getFunctionList = async (region) => {
   try {
     const { stdout, stderr } = await exec(`aws lambda list-functions --region ${region}`)
-    return stdout
+    return JSON.parse(stdout).Functions
   } catch (e) {
     console.log(e.message)
     process.exit()
@@ -14,7 +14,7 @@ const getFunctionList = async (region) => {
 const getFunction = async (region, name) => {
   try {
     const { stdout } = await exec(`aws lambda get-function --function-name ${name} --region ${region}`)
-    return stdout
+    return JSON.parse(stdout).Configuration
   } catch (e) {
     console.log(e.message)
     process.exit()
