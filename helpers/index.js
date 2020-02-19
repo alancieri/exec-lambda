@@ -15,7 +15,7 @@ const getFunctionListName = async (region) => {
   console.log('\nWaiting available functions...')
   try {
     let lambdas = []
-    const { stdout } = await exec(`aws lambda list-functions --region ${region}`)
+    const { stdout } = await exec(`aws lambda list-functions --max-items 35 --region ${region}`)
     const items = JSON.parse(stdout).Functions
     for (let item of items) {
       lambdas.push(item.FunctionName)
