@@ -1,26 +1,11 @@
 const util = require('util')
 const exec = util.promisify(require('child_process').exec)
+const readlineSync = require('readline-sync')
 
 const getFunctionList = async (region) => {
   try {
     const { stdout, stderr } = await exec(`aws lambda list-functions --region ${region}`)
     return JSON.parse(stdout).Functions
-  } catch (e) {
-    console.log(e.message)
-    process.exit()
-  }
-}
-
-const getFunctionListName = async (region) => {
-  console.log('\nWaiting available functions...')
-  try {
-    let lambdas = []
-    const { stdout } = await exec(`aws lambda list-functions --max-items 35 --region ${region}`)
-    const items = JSON.parse(stdout).Functions
-    for (let item of items) {
-      lambdas.push(item.FunctionName)
-    }
-    return lambdas.sort()
   } catch (e) {
     console.log(e.message)
     process.exit()
@@ -52,7 +37,7 @@ const getLastLayerVersion = async (region, layerName) => {
   }
 }
 
-const getRegions = async () => {
+const _getRegions = async () => {
   console.log('Waiting available regions...')
   try {
     let regions = []
@@ -68,4 +53,50 @@ const getRegions = async () => {
   }
 }
 
-module.exports = { getFunction, getFunctionList, getFunctionListName, getLastLayerVersion, getRegions }
+const selectRegion = async () => {
+  const regions = await _getRegions()
+  const region = readlineSync.keyInSelect(regions, '> Select the region', { cancel: 'Exit' })
+  return regions[region]
+}
+
+const _paginateListFunction = async (region, token = null) => {
+  if (!token) { console.log('\nWaiting available functions...') }
+  const strToken = token ? `--starting-token ${token}` : ``
+  try {
+    let functionsList = []
+    const { stdout } = await exec(`aws lambda list-functions --max-items 20 ${strToken} --region ${region}`)
+    const response = JSON.parse(stdout)
+    const items = response.Functions
+    const nextToken = response.NextToken ? response.NextToken : null
+    for (let item of items) {
+      functionsList.push(item.FunctionName)
+    }
+    functionsList.sort()
+    // console.log('response', { functionsList, nextToken })
+    return { functionsList, nextToken }
+  } catch (e) {
+    console.log(e.message)
+    process.exit()
+  }
+}
+
+const selectFunction = async (region, token = null) => {
+  const res = await _paginateListFunction(region, token)
+  const option = res.nextToken ? { cancel: 'Show more...' } : { cancel: 'Exit' }
+  const functionName = readlineSync.keyInSelect(res.functionsList, '> Select the function', option)
+  if (functionName === -1) {
+    if (res.nextToken) {
+      return selectFunction(region, res.nextToken)
+    }
+    else process.exit()
+  }
+  return res.functionsList[functionName]
+}
+
+module.exports = {
+  getFunction,
+  getFunctionList,
+  selectFunction,
+  getLastLayerVersion,
+  selectRegion
+}

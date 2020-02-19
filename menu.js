@@ -2,7 +2,7 @@ const readlineSync = require('readline-sync')
 const { downloadFunctions } = require('./lib/lambda-download')
 const { setLayers } = require('./lib/layers-set')
 const { updateLayerVersionLambda, updateLayerVersion } = require('./lib/layer-update')
-const { getRegions, getFunctionListName } = require('./helpers')
+const { selectFunction, selectRegion } = require('./helpers')
 
 const inputFunction = async (region) => {
   const lambdas = await getFunctionListName(region)
@@ -11,20 +11,11 @@ const inputFunction = async (region) => {
   return lambdas[lambda]
 }
 
-const inputRegion = async () => {
-  const regions = await getRegions()
-  const region = readlineSync.keyInSelect(regions, '> Select the region', { cancel: 'Exit' })
-  return regions[region]
-}
-
 const menu = async () => {
   console.clear()
   console.log('> Exec Lambda')
-  const region = await inputRegion()
-  if (!region) {
-    console.log('Region not valid!')
-    process.exit()
-  }
+  const region = await selectRegion()
+  if (!region) { process.exit() }
   console.clear()
   console.log('> Exec Lambda')
   console.log('> Selected region:', region)
@@ -49,7 +40,7 @@ const menu = async () => {
     case 3:
       let functionName = readlineSync.question('> Lambda function name [ENTER for list]: ')
       if (functionName.trim() === '') {
-        functionName = await inputFunction(region)
+        functionName = await selectFunction(region)
       }
       await downloadFunctions(region, functionName)
       break
