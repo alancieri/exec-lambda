@@ -11,10 +11,26 @@ const getFunctionList = async (region) => {
   }
 }
 
+const getFunctionListName = async (region) => {
+  console.log('\nWaiting available functions...')
+  try {
+    let lambdas = []
+    const { stdout } = await exec(`aws lambda list-functions --region ${region}`)
+    const items = JSON.parse(stdout).Functions
+    for (let item of items) {
+      lambdas.push(item.FunctionName)
+    }
+    return lambdas.sort()
+  } catch (e) {
+    console.log(e.message)
+    process.exit()
+  }
+}
+
 const getFunction = async (region, name) => {
   try {
     const { stdout } = await exec(`aws lambda get-function --function-name ${name} --region ${region}`)
-    return JSON.parse(stdout).Configuration
+    return JSON.parse(stdout)
   } catch (e) {
     console.log(e.message)
     process.exit()
@@ -52,4 +68,4 @@ const getRegions = async () => {
   }
 }
 
-module.exports = { getFunction, getFunctionList, getLastLayerVersion, getRegions }
+module.exports = { getFunction, getFunctionList, getFunctionListName, getLastLayerVersion, getRegions }

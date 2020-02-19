@@ -2,7 +2,14 @@ const readlineSync = require('readline-sync')
 const { downloadFunctions } = require('./lib/lambda-download')
 const { setLayers } = require('./lib/layers-set')
 const { updateLayerVersionLambda, updateLayerVersion } = require('./lib/layer-update')
-const { getRegions } = require('./helpers')
+const { getRegions, getFunctionListName } = require('./helpers')
+
+const inputFunction = async (region) => {
+  const lambdas = await getFunctionListName(region)
+  const lambda = readlineSync.keyInSelect(lambdas, '> Select the function', { cancel: 'Exit' })
+  if (lambda === -1) { process.exit() }
+  return lambdas[lambda]
+}
 
 const inputRegion = async () => {
   const regions = await getRegions()
@@ -40,8 +47,10 @@ const menu = async () => {
       await updateLayerVersion(region)
       break
     case 3:
-      const functionName = readlineSync.question('> Lambda function name: ',
-        { limit: (input) => input !== '' })
+      let functionName = readlineSync.question('> Lambda function name [ENTER for list]: ')
+      if (functionName.trim() === '') {
+        functionName = await inputFunction(region)
+      }
       await downloadFunctions(region, functionName)
       break
     case 4:
