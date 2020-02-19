@@ -1,6 +1,6 @@
 {
     "name": "exec-lambda",
-    "version": "0.1.8",
+    "version": "0.1.9",
     "description": "AWS Lambda Functions Manager",
     "main": "lib/layers-set.js",
     "scripts": {
@@ -21,6 +21,7 @@
     },
     "dependencies": {
         "child_process": "^1.0.2",
+        "colors": "^1.4.0",
         "download-file": "^0.1.5",
         "extract-zip": "^1.6.7",
         "readline-sync": "^1.4.10"

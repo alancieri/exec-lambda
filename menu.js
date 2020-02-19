@@ -13,12 +13,12 @@ const inputFunction = async (region) => {
 
 const menu = async () => {
   console.clear()
-  console.log('> Exec Lambda')
+  console.log('> Exec Lambda'.cyan)
   const region = await selectRegion()
   if (!region) { process.exit() }
   console.clear()
-  console.log('> Exec Lambda')
-  console.log('> Selected region:', region)
+  console.log('> Exec Lambda'.cyan)
+  console.log(`\n> Selected region: ${region}`.green)
   const items = [
     'Set layers for selected function',
     'Update layer to last version for selected function',
@@ -26,7 +26,7 @@ const menu = async () => {
     'Download selected function',
     'Download all functions'
   ]
-  let index = readlineSync.keyInSelect(items, '> Select the task', { cancel: 'Exit' })
+  let index = readlineSync.keyInSelect(items, '> Select the task'.yellow, { cancel: 'Exit' })
   switch (parseInt(index)) {
     case 0:
       await setLayers(region)
@@ -38,7 +38,7 @@ const menu = async () => {
       await updateLayerVersion(region)
       break
     case 3:
-      let functionName = readlineSync.question('> Lambda function name [ENTER for list]: ')
+      let functionName = readlineSync.question('> Lambda function name [ENTER for list]: '.yellow)
       if (functionName.trim() === '') {
         functionName = await selectFunction(region)
       }
