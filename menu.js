@@ -2,6 +2,7 @@ const readlineSync = require('readline-sync')
 const { downloadFunctions } = require('./lib/lambda-download')
 const { setLayers } = require('./lib/layers-set')
 const { updateLayerVersionLambda, updateLayerVersion } = require('./lib/layer-update')
+const { searchLayer } = require('./lib/layer-search')
 const { selectFunction, selectRegion } = require('./helpers')
 
 const inputFunction = async (region) => {
@@ -24,7 +25,8 @@ const menu = async () => {
     'Update layer to last version for selected function',
     'Update layer to last version to all related functions',
     'Download selected function',
-    'Download all functions'
+    'Download all functions',
+    'Search layers in all lambdas'
   ]
   let index = readlineSync.keyInSelect(items, '> Select the task'.yellow, { cancel: 'Exit' })
   switch (parseInt(index)) {
@@ -46,6 +48,9 @@ const menu = async () => {
       break
     case 4:
       await downloadFunctions(region)
+      break
+    case 5:
+      await searchLayer(region)
       break
     default :
       process.exit()
